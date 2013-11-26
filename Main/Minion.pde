@@ -6,12 +6,14 @@ abstract class Minion extends Creature {
 
   int deathTicks = 0;
   int state = 0; // 0 == alive, 1 == dead
+  
+  float atkTargetDist=Float.MAX_VALUE;
 
-  public Minion(int health, int range, int[] colour, int x, int y, float or, float xVel, float yVel, int atkDamage, int atkRange, int atkSpeed, int team, Rift r) {
+  public Minion(int health, int[] colour, int x, int y, float or, float xVel, float yVel, int atkDamage, int atkRange, int atkSpeed, int team, Rift r) {
 
     super(x, y, or, xVel, yVel, colour, atkDamage, atkRange, atkSpeed, r);
     this.team = team;
-    this.atkRange = range;   
+    this.atkRange = atkRange;   
     currHealth = maxHealth = health; 
 
     MAX_SPEED = 5f;
@@ -33,9 +35,24 @@ abstract class Minion extends Creature {
   }
 
   public void update() {
-    integrate(new PVector(targetX, targetY));
-    if (position.x == targetX && position.y == targetY)
-      changeTarget();
+    checkTarget();
+    move();
+    processAttack();
+    //if (position.x == targetX && position.y == targetY)
+    //  changeTarget();
+  }
+  
+  public void checkTarget(){
+    for(Minion min : r.minions){
+      if(min == this) return;
+      
+      if(min.team != team)
+        if(atkTarget != null){
+          if(Utils.distanceSqr(position, min.position) < atkTargetDist)
+            attack(min);
+        }else
+          attack(min);
+    }
   }
 
   public void ddraw() {
@@ -70,10 +87,10 @@ abstract class Minion extends Creature {
     r.removeMinions.add(r.minions.indexOf(this));
   }
 
-  public void kill() {
+  public void kill(Creature c) {
     state = 1;
-    r.c.attacking = false;
-    r.c.atkTarget = null;
+    c.attacking = false;
+    c.atkTarget = null;
   }
 }
 

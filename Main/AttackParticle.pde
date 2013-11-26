@@ -1,11 +1,13 @@
 class AttackParticle extends GameEntity {
   Minion target;
+  Creature source;
   int damage;
 
-  public AttackParticle(PVector pos, Minion target, int damage, Rift r) {
+  public AttackParticle(PVector pos, Minion target, int damage, Rift r, Creature s) {
     super(pos.x, pos.y, 0f, 0, 0, new int[] {0, 0, 0}, 7.5, r);
     this.target = target;
     this.damage = damage;
+    this.source = s;
   }
 
   public void update() {
@@ -14,7 +16,7 @@ class AttackParticle extends GameEntity {
     if (Utils.circToCircColl(position, rad, target.position, target.rad)) {
       target.currHealth -= damage;
       if (target.currHealth <= 0) {
-        target.kill();
+        target.kill(source);
       }
       r.removeAttacks.add(r.attacks.indexOf(this));
     }

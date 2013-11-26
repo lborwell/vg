@@ -55,10 +55,12 @@ public class Rift implements State{
   }
   
   void addMinions() {
-    for (int i=1; i<=5; i++){
+    /*for (int i=1; i<=5; i++){
       minions.add(new RangedMinion(i*150, i*150, 2f, this, 0));
       minions.add(new MeleeMinion(i*200, i*200, 2f, this, 1));
-    }
+    }*/
+    minions.add(new MeleeMinion((displayWidth/2)+400, (displayHeight/2)-100, 2f, this, 1));
+    minions.add(new RangedMinion((displayWidth/2)-150, (displayHeight/2)-150, 2f, this, 0));
   }
   
   void press(int x, int y){
