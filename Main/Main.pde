@@ -5,7 +5,6 @@ void setup() {
   size(displayWidth, displayHeight);
   orientation(LANDSCAPE);
   init();
-  
   ellipseMode(RADIUS);
 }
 

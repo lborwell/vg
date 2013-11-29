@@ -44,7 +44,7 @@ abstract class Minion extends Creature {
   
   public void checkTarget(){
     for(Minion min : r.minions){
-      if(min == this) return;
+      if(min == this) continue;
       
       if(min.team != team)
         if(atkTarget != null){
@@ -78,6 +78,7 @@ abstract class Minion extends Creature {
   public void drawHealthBar() {
     fill(0, 0, 0);
     rect(position.x-(float)rad-5, position.y-(float)rad-12, rad*2+10, 10);
+    if(currHealth <= 0) return;
     fill(0, 255, 0);
     float hp = ((float)currHealth / (float)maxHealth) * (rad*2+10);
     rect(position.x-(float)rad-5, position.y-(float)rad-12, hp, 10);

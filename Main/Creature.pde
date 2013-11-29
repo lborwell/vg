@@ -47,6 +47,10 @@ public abstract class Creature extends GameEntity {
   
   void processAttack(){
    if (attacking) {
+     if(atkTarget.state == 1){
+       attacking = false;
+       return;
+     } 
       if (Utils.distanceSqr(position, atkTarget.position) >= Math.pow(atkRange, 2)+1) {
         moveToAttackRange();
         return;

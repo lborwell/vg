@@ -1,3 +1,7 @@
+import java.util.HashSet;
+import java.util.Arrays;
+import java.util.Collections;
+
 public class Rift implements State{
   Main m;
   Champion c;
@@ -6,8 +10,8 @@ public class Rift implements State{
   
   ArrayList<Minion> minions          = new ArrayList<Minion>();
   ArrayList<AttackParticle> attacks  = new ArrayList<AttackParticle>();
-  ArrayList<Integer> removeAttacks   = new ArrayList<Integer>();
-  ArrayList<Integer> removeMinions   = new ArrayList<Integer>();
+  HashSet<Integer> removeAttacks     = new HashSet<Integer>();
+  HashSet<Integer> removeMinions     = new HashSet<Integer>();
   
   public Rift(Main m){
     this.m = m;
@@ -29,16 +33,25 @@ public class Rift implements State{
     fill(100, 0, 100);
     rect(0, 0, 50, 50);
   
-    
     for (AttackParticle atk : attacks)
       atk.update();
-    for (int i : removeAttacks)
-      attacks.remove(i);
+      
+    if(removeAttacks.size() > 0){
+      Integer[] atks = (new ArrayList<Integer>(removeAttacks)).toArray(new Integer[removeAttacks.size()]);
+      Arrays.sort(atks, Collections.reverseOrder());
+      for (int i : atks)
+        attacks.remove(i);
+    }
   
     for (Minion m : minions)
       m.update();
-    for (int i : removeMinions)
-      minions.remove(i);
+      
+    if(removeMinions.size() > 0){
+      Integer[] mins = (new ArrayList<Integer>(removeMinions)).toArray(new Integer[removeMinions.size()]);
+      Arrays.sort(mins, Collections.reverseOrder());
+      for (int i : mins)
+        minions.remove(i);
+    }
       
     c.update();
 
@@ -47,6 +60,9 @@ public class Rift implements State{
   }
   
   void ddraw(){
+    textSize(30);
+    text(minions.size(),100,100);
+    
     c.ddraw();
     for (Minion min : minions)
       min.ddraw();
@@ -59,8 +75,10 @@ public class Rift implements State{
       minions.add(new RangedMinion(i*150, i*150, 2f, this, 0));
       minions.add(new MeleeMinion(i*200, i*200, 2f, this, 1));
     }*/
-    minions.add(new MeleeMinion((displayWidth/2)+400, (displayHeight/2)-100, 2f, this, 1));
-    minions.add(new RangedMinion((displayWidth/2)-150, (displayHeight/2)-150, 2f, this, 0));
+    minions.add(new MeleeMinion((displayWidth/2)+400, (displayHeight/2)-100, 2f, this, 0));
+    
+    //minions.add(new RangedMinion((displayWidth/2)+400, (displayHeight/2)-100, 2f, this, 0));
+    minions.add(new RangedMinion((displayWidth/2)-150, (displayHeight/2)-150, 2f, this, 1));
   }
   
   void press(int x, int y){

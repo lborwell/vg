@@ -11,6 +11,10 @@ class AttackParticle extends GameEntity {
   }
 
   public void update() {
+    if(target.currHealth <= 0){
+      r.removeAttacks.add(r.attacks.indexOf(this));
+      return;
+    }
     integrate(new PVector(target.position.x, target.position.y));
 
     if (Utils.circToCircColl(position, rad, target.position, target.rad)) {
