@@ -9,19 +9,17 @@ abstract class GameEntity {
   public float orientation ;
   public PVector velocity ;
 
-  float targetX;
-  float targetY;
+  PVector targetLoc;
   int[] colour;
   float rad;
 
 
-  public GameEntity(float x, float y, float or, float xVel, float yVel, int[] colour, float rad, Rift r) {
-    position = new PVector(x, y) ;
+  public GameEntity(PVector pos, float or, int[] colour, float rad, Rift r) {
+    position = pos;
     orientation = or ;
-    velocity = new PVector(xVel, yVel) ;
+    velocity = new PVector(0,0) ;
     this.colour = colour;
-    targetX = x; 
-    targetY = y;
+    targetLoc = pos.get();
 
     this.r = r;
     this.rad = rad;
@@ -72,7 +70,6 @@ abstract class GameEntity {
     if (orientation > PI) orientation -= 2*PI ;
     else if (orientation < -PI) orientation += 2*PI ;
   }
-
 
   abstract void update();
   abstract void ddraw();

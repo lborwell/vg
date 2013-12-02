@@ -1,9 +1,10 @@
 class Champion extends Creature {
 
-
-  public Champion(int x, int y, float or, Rift r) {
-    super(x, y, or, 0, 0, new int[] {0, 0, 255}, 25, 600, 1000, r);
-    
+  int score;
+  
+  public Champion(PVector pos, float or, Rift r) {
+    super(pos, or, new int[] {0, 0, 255}, 25, 600, 1000, r);
+    score = 0;
     team = 0;
   }
 

@@ -4,7 +4,7 @@ class AttackParticle extends GameEntity {
   int damage;
 
   public AttackParticle(PVector pos, Minion target, int damage, Rift r, Creature s) {
-    super(pos.x, pos.y, 0f, 0, 0, new int[] {0, 0, 0}, 7.5, r);
+    super(pos, 0f, new int[] {0, 0, 0}, 7.5, r);
     this.target = target;
     this.damage = damage;
     this.source = s;
@@ -18,6 +18,9 @@ class AttackParticle extends GameEntity {
     integrate(new PVector(target.position.x, target.position.y));
 
     if (Utils.circToCircColl(position, rad, target.position, target.rad)) {
+      if(source instanceof Champion)
+        if(target.currHealth - damage <= 0)
+          ((Champion)source).score++;
       target.currHealth -= damage;
       if (target.currHealth <= 0) {
         target.kill(source);
