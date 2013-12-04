@@ -6,7 +6,7 @@ class RangedMinion extends Minion {
       colour = new int[]{0,0,128};
     else
       colour = new int[]{128,0,0};
-   
   }
+
 }
 

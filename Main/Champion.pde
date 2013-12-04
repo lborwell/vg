@@ -29,7 +29,7 @@ class Champion extends Creature {
     processAttack();
   }
   
-
+  void kill(Creature c){}
 
 
 }

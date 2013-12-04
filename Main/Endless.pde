@@ -1,57 +1,89 @@
 import java.util.concurrent.TimeUnit;
 
 class Endless extends Rift{
-  ArrayList<Turret> turrets          = new ArrayList<Turret>();
-  long startTime;
-  
   public Endless(Main m){
     this.m = m;
   }
   
   void init(){
     startTime = System.currentTimeMillis();
-    minions.clear();
+    creatures.clear();
     attacks.clear();
     removeAttacks.clear();
     removeMinions.clear();
     
     c = new Champion(new PVector(displayWidth/2, displayHeight/2), 0f, this);
+    creatures.add(c);
     addMinions();
   }
   
-  void update(){
-    background(128) ;
-
-    fill(100, 0, 100);
-    rect(0, 0, 50, 50);
-  
+  void update(){  
     updateAttacks();
-  
-    updateMinions();
-     
-    c.update();
+    updateCreatures();
 
     clearRemovals();
   }
   
   void ddraw(){
-    textSize(30);
+    background(128) ;
+
+    fill(100, 0, 100);
+    rect(0, 0, 50, 50);
     
-    text(c.score,150,150);
-    long mill = System.currentTimeMillis() - startTime;
-    String s = String.format("%d:%s", TimeUnit.MILLISECONDS.toMinutes(mill),TimeUnit.MILLISECONDS.toSeconds(mill) -  TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(mill)));
-    text(s, displayWidth-100,displayHeight-100);
-    
-    c.ddraw();
-    
-    drawMinions();
+    drawInfo();
+    drawCreatures();
     drawAttacks();
   }
   
   void addMinions() {
-    MinionSpawner ms = new MinionSpawner(this,0);
+    ms = new MinionSpawner(this,0);
     ms.start();
   }
   
   void finish(){}
+}
+
+abstract class EndlessTurret extends Endless{
+  public EndlessTurret(Main m){
+    super(m);
+  }
+  
+  void init(){
+    super.init();
+    addTurrets();
+  }
+  
+  void addTurrets(){
+    creatures.add(new Turret(new PVector(75,displayHeight-200),0,this));
+    creatures.add(new Turret(new PVector(displayWidth-75,displayHeight-200),1,this));
+  }
+}
+
+/*
+* Asymmetrical with turrets
+*/
+class AsymEndlessTurret extends EndlessTurret{
+  public AsymEndlessTurret(Main m){
+    super(m);
+  }
+  
+  void addMinions(){
+    ms = new MinionSpawner(this,1);
+    ms.start();
+  }
+}
+
+
+/*
+* Symmetrical with turrets
+*/
+class SymEndlessTurret extends EndlessTurret{
+  public SymEndlessTurret(Main m){
+    super(m);
+  }
+  
+  void addMinions(){
+    ms = new MinionSpawner(this,0);
+    ms.start();
+  }
 }

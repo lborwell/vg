@@ -6,10 +6,14 @@ public abstract class Creature extends GameEntity {
   int atkRange;
   int atkSpeed;
   int team;
+  int maxHealth;
+  int currHealth;
+  int state = 0; // 0 == alive, 1 == dead
 
   float atkTargetDist=Float.MAX_VALUE;
   boolean attacking=false;
-  Minion atkTarget;
+  //Minion atkTarget;
+  Creature atkTarget;
 
   Creature(PVector pos, float or, int[] colour, int atkDamage, int atkRange, int atkSpeed, Rift r) {
     super(pos, or, colour, 50, r);
@@ -19,7 +23,7 @@ public abstract class Creature extends GameEntity {
     atkTimer = System.currentTimeMillis();
   }
 
-  public void attack(Minion target) {
+  public void attack(Creature target) {
     if (target.team != team) {
       attacking = true;
       atkTarget = target;
@@ -37,32 +41,32 @@ public abstract class Creature extends GameEntity {
       atkStallCounter++;
     }
   }
-
+  
   public void checkTarget() {
     if(atkTarget == null || atkTarget.state == 1)
       atkTargetDist = Float.MAX_VALUE;
-    for (Minion min : r.minions) {
-      if (min == this) continue;
+    for (Creature cr : r.creatures) {
+      if (cr == this) continue;
 
-      if (min.team != team)
+      if (cr.team != team)
         if (atkTarget != null) {
-          float dist = (float)Utils.distanceSqr(position, min.position);
+          float dist = (float)Utils.distanceSqr(position, cr.position);
           if (dist < atkTargetDist) {
             atkTargetDist = dist;
-            attack(min);
+            attack(cr);
           }
         }
         else
-          attack(min);
+          attack(cr);
     }
   }
 
   void checkCollisions() {
-    for (Minion min : r.minions) {
-      if (min == this) continue;
-      if (Utils.circToCircColl(position, rad, min.position, min.rad)) {
-        double moveDist = ((rad+min.rad) - sqrt((float)Utils.distanceSqr(min.position, position)) + 1)/2;
-        PVector c = PVector.sub(position, min.position);
+    for (Creature cr : r.creatures) {
+      if (cr == this) continue;
+      if (Utils.circToCircColl(position, rad, cr.position, cr.rad)) {
+        double moveDist = ((rad+cr.rad) - sqrt((float)Utils.distanceSqr(cr.position, position)) + 1)/2;
+        PVector c = PVector.sub(position, cr.position);
         position = PVector.add(c.setMag(null, (float)moveDist), position);
         
         //try move to side of collided
@@ -71,7 +75,7 @@ public abstract class Creature extends GameEntity {
     }
   }
   
-  PVector findFreePos(Minion m){
+  /*PVector findFreePos(Minion m){
     int i=1;
     PVector pos;
     while(true){
@@ -101,7 +105,7 @@ public abstract class Creature extends GameEntity {
         return false;
     }
     return true;
-  }
+  }*/
 
   void moveToAttackRange() {
     float vX = position.x - atkTarget.position.x;
@@ -133,5 +137,7 @@ public abstract class Creature extends GameEntity {
     stalled = true;
     r.attacks.add(new AttackParticle(position.get(), atkTarget, atkDamage, r, this));
   }
+  
+  abstract void kill(Creature c);
 }
 

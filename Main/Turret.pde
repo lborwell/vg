@@ -15,4 +15,6 @@ class Turret extends Creature{
     checkTarget();
     processAttack();
   }
+  
+  void kill(Creature c){}
 }

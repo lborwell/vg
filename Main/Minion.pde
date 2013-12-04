@@ -1,14 +1,12 @@
 import java.util.concurrent.LinkedBlockingQueue;
 
 abstract class Minion extends Creature {
-  int maxHealth;
-  int currHealth;
   //ArrayList<PVector> path;
   LinkedBlockingQueue<PVector> path = new LinkedBlockingQueue<PVector>();
   int currTargetLoc = 0;
 
   int deathTicks = 0;
-  int state = 0; // 0 == alive, 1 == dead
+
   
   public Minion(int health, int[] colour, PVector pos, float or, int atkDamage, int atkRange, int atkSpeed, int team, Rift r) {
     super(pos, or, colour, atkDamage, atkRange, atkSpeed, r);
@@ -55,9 +53,10 @@ abstract class Minion extends Creature {
   }
 
   public void removethis() {
-    r.removeMinions.add(r.minions.indexOf(this));
+    r.removeMinions.add(r.creatures.indexOf(this));
   }
 
+  
   public void kill(Creature c) {
     state = 1;
     c.attacking = false;
