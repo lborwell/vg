@@ -1,3 +1,9 @@
+/*
+* Spawns minions in the given Rift in waves of 6. 3 melee, 3 ranged.
+* Minions are spawned at .75 second intervals, and waves are separated by 30 seconds.
+* Is run in a separate thread, so lists of creatures must be synchronized.
+*/
+
 class MinionSpawner extends Thread{
   public MinionSpawner(Rift r, int mode){
     this.r = r;

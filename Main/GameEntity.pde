@@ -1,3 +1,8 @@
+/*
+* Highest-level class for anything in the game that needs to exist in the game.
+* integrate method from lecture slides. 
+*/
+
 abstract class GameEntity {
   Rift r;
 

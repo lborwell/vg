@@ -1,16 +1,21 @@
-HashMap<String, State> menus  = new HashMap<String, State>();
-State state;
-State currRift;
+/*
+* Main class. Holds, updates and draws current state.
+*/
+
+
+HashMap<String, State> menus  = new HashMap<String, State>();  // List of states
+State state;     //Current state
+State currRift;  //Current ``game'' state, used to resume after pausing the game
 
 void setup() {
   size(displayWidth, displayHeight);
-  orientation(LANDSCAPE);
+  orientation(LANDSCAPE);  //Lock screen sideways (game resets upon rotation if omitted)
   init();
   ellipseMode(RADIUS);
 }
 
 void init() {
-  noStroke();
+  noStroke(); //don't draw outlines around shapes
   createMenus();
   menus.put("endlessnoturr",new Endless(this));
   menus.put("symendlessturr",new SymEndlessTurret(this));
@@ -20,10 +25,14 @@ void init() {
   menus.put("symtimedturr",new SymTimedTurret(this));
   menus.put("asymtimedturr",new AsymTimedTurret(this));
   
+  menus.put("settings",new SettingsMenu(this));
   menus.put("highscores",new Highscores(this));
   state = menus.get("main");
 }
 
+/*
+* Creates ``sub-menus'': menus for endless and timed game modes, highscores, and settings
+*/
 void createMenus(){
   Menu mainMenu = new Menu("Building Legends", this);
   mainMenu.addItem(new MenuItem("Endless",this){
@@ -43,6 +52,12 @@ void createMenus(){
   mainMenu.addItem(new MenuItem("Highscores",this){
     public void click(){
       State st = m.menus.get("highscores");
+      m.state = st;
+    }
+  });
+  mainMenu.addItem(new MenuItem("Settings",this){
+    public void click(){
+      State st = m.menus.get("settings");
       m.state = st;
     }
   });
@@ -132,19 +147,36 @@ void createMenus(){
   menus.put("timed",timedMenu);
 }
 
+/*
+* Main game loop, (hopefully) called at 60fps. 
+* Calls update and draw methods for current state.
+*/
 void draw() {
   state.update();
   state.ddraw();
 }
 
+/*
+* Delegate mouse press to current state.
+* Generally used by ``real-time'' states as user input.
+*/ 
 void mousePressed() {
   state.press(mouseX, mouseY);
 }
 
+/*
+* Delegate mouse release to current state.
+* Generally used by menu states as user input, as mousePressed will be called 
+* repeatedly. Using mouseReleased saves the user from having to lift their finger
+* off a menu option within 1/60 of a second.
+*/ 
 void mouseReleased(){
   state.release(mouseX, mouseY);
 }
 
+/*
+* For convenience.
+*/
 void mouseDragged() {
   mousePressed();
 }

@@ -1,7 +1,12 @@
 class Turret extends Creature{
   
+  /*
+  * param PVector pos Spawning position.
+  * param int team Team we are on
+  * param Rift r Game we are part of.
+  */
   public Turret(PVector pos, int team, Rift r){
-    super(pos,2f,new int[]{0,128,0},45,500,1000,r);
+    super(pos,2f,new int[]{0,128,0},100,700,1000,r);
     this.team = team;
     this.rad = 100;
   }

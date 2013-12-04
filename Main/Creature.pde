@@ -1,20 +1,32 @@
+/*
+* Top-level creature class. Currently extended by Champion, Minion and Turret. 
+*/
+
 public abstract class Creature extends GameEntity {
-  long atkTimer;
-  int atkStallCounter = 0;
-  boolean stalled = false;
-  int atkDamage;
-  int atkRange;
-  int atkSpeed;
-  int team;
-  int maxHealth;
-  int currHealth;
+  long atkTimer;  //When we last attacked.
+  int atkStallCounter = 0;  //Stops movement when less than threshhold.
+  boolean stalled = false;  //Are we stalling from attack?
+  int atkDamage;  //Damage to do per attack.
+  int atkRange;  //Radius around position, can only attack within this.
+  int atkSpeed;  //Number of milliseconds between attacks. 
+  int team;  //Are we friends or allies of player-controlled champion? 
+  int maxHealth;  //Maximum health value.
+  int currHealth; //Current health value.
   int state = 0; // 0 == alive, 1 == dead
 
-  float atkTargetDist=Float.MAX_VALUE;
-  boolean attacking=false;
-  //Minion atkTarget;
-  Creature atkTarget;
+  float atkTargetDist=Float.MAX_VALUE;  //Distance to current attack target.
+  boolean attacking=false;  //Are we attacking anything right now?
+  Creature atkTarget;  //This is what we are attacking.
 
+  /*
+  * param PVector pos Spawning location.
+  * param float or Spawning orientation.
+  * param int[] colour 3-tuple RGB colour value.
+  * param int atkDamage Damage to do per attack.
+  * param int atkRange Maximum attack distance.
+  * param int atkSpeed Milliseconds between attacks.
+  * param Rift r Game we are part of.
+  */
   Creature(PVector pos, float or, int[] colour, int atkDamage, int atkRange, int atkSpeed, Rift r) {
     super(pos, or, colour, 50, r);
     this.atkDamage = atkDamage;
@@ -23,6 +35,10 @@ public abstract class Creature extends GameEntity {
     atkTimer = System.currentTimeMillis();
   }
 
+  /*
+  * Set creature as current attack target, and attacking to true.
+  * param Creature target Creature to attack.
+  */
   public void attack(Creature target) {
     if (target.team != team) {
       attacking = true;
@@ -30,6 +46,9 @@ public abstract class Creature extends GameEntity {
     }
   }
 
+  /*
+  * Standard movement. If we are stalling after attack, do not move.
+  */
   void move() {
     if (!stalled)
       integrate(targetLoc.get());
@@ -42,11 +61,15 @@ public abstract class Creature extends GameEntity {
     }
   }
   
+  /*
+  * Search for closest enemy creature, set it as attack target.
+  * Currently does not attack champions, as this caused some problems.
+  */
   public void checkTarget() {
     if(atkTarget == null || atkTarget.state == 1)
       atkTargetDist = Float.MAX_VALUE;
     for (Creature cr : r.creatures) {
-      if (cr == this) continue;
+      if (cr == this || cr instanceof Champion) continue;
 
       if (cr.team != team)
         if (atkTarget != null) {
@@ -61,6 +84,9 @@ public abstract class Creature extends GameEntity {
     }
   }
 
+  /*
+  * Check and resolve collisions with other creatures.
+  */
   void checkCollisions() {
     for (Creature cr : r.creatures) {
       if (cr == this) continue;
@@ -75,6 +101,10 @@ public abstract class Creature extends GameEntity {
     }
   }
   
+  /*
+  * Commented-out alternate collision resolution code. Would search for space next to creature collided with,
+  * then move there. Was too specific to one collision pattern to work.
+  */
   /*PVector findFreePos(Minion m){
     int i=1;
     PVector pos;
@@ -107,6 +137,9 @@ public abstract class Creature extends GameEntity {
     return true;
   }*/
 
+  /*
+  * Find closest point between current location and attack target, then set that as target location.
+  */
   void moveToAttackRange() {
     float vX = position.x - atkTarget.position.x;
     float vY = position.y - atkTarget.position.y;
@@ -114,6 +147,10 @@ public abstract class Creature extends GameEntity {
     targetLoc = new PVector(atkTarget.position.x + vX / magV * atkRange, atkTarget.position.y + vY / magV * atkRange);
   }
 
+  /*
+  * If we are set to attacking and have waited our attack speed since our last attack,
+  * launch attack at current target.
+  */
   void processAttack(){
     if (attacking) {
       if (atkTarget.state == 1) {
@@ -133,11 +170,17 @@ public abstract class Creature extends GameEntity {
     }
   }
 
+  /*
+  * Spawn new attack, from me to current target.
+  */
   void launchAttack() {
     stalled = true;
     r.attacks.add(new AttackParticle(position.get(), atkTarget, atkDamage, r, this));
   }
   
+  /*
+  * param Creature c The creature that killed us.
+  */
   abstract void kill(Creature c);
 }
 

@@ -1,3 +1,8 @@
+/*
+* Timed game modes. Ends the game after a certain number of waves, then writes
+* current score to leaderboard.
+*/
+
 public class Timed extends Endless{
   public Timed(Main m){
     super(m);
@@ -10,11 +15,11 @@ public class Timed extends Endless{
   
   public void update(){
     super.update();
-    if(ms.wavesSpawned == 2)
-      fuckingQuit();
+    if(ms.wavesSpawned == 5)
+      endThis();
   }
   
-  public void fuckingQuit(){
+  public void endThis(){
     ms.quit = true;
     ((Highscores)m.menus.get("highscores")).addScore(c.score);
     m.state = m.menus.get("highscores");
@@ -39,11 +44,11 @@ class AsymTimedTurret extends AsymEndlessTurret{
   
   public void update(){
     super.update();
-    if(ms.wavesSpawned == 2)
-      fuckingQuit();
+    if(ms.wavesSpawned == 5)
+      endThis();
   }
   
-  public void fuckingQuit(){
+  public void endThis(){
     ms.quit = true;
     ((Highscores)m.menus.get("highscores")).addScore(c.score);
     m.state = m.menus.get("highscores");
@@ -72,11 +77,11 @@ class SymTimedTurret extends SymEndlessTurret{
   
   public void update(){
     super.update();
-    if(ms.wavesSpawned == 2)
-      fuckingQuit();
+    if(ms.wavesSpawned == 5)
+      endThis();
   }
   
-  public void fuckingQuit(){
+  public void endThis(){
     ms.quit = true;
     ((Highscores)m.menus.get("highscores")).addScore(c.score);
     m.state = m.menus.get("highscores");

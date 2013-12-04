@@ -5,6 +5,11 @@ import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+/*
+* Leaderboard table. Reads csv file //sdcard//scores.csv.
+* Currently only works with one leaderboard, for some reason couldn't get multiple files
+* to load. This kinda sucks.
+*/
 class Highscores implements State{
   Main m;
   Table t;
@@ -78,8 +83,8 @@ class Highscores implements State{
   void press(int x, int y){}
   
   void release(int x, int y){
-    if (mouseX <= 50)
-      if (mouseY <= 50) {
+    if (x <= 50)
+      if (y <= 50) {
         m.state = m.menus.get("main");
         return;
       }

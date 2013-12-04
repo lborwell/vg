@@ -2,6 +2,9 @@ import java.util.HashSet;
 import java.util.Arrays;
 import java.util.Collections;
 
+/*
+* Top-level ``game'' class. Stores champion and creatures. Updates and draws them all.
+*/
 public abstract class Rift implements State{
   Main m;
   Champion c;
@@ -27,11 +30,13 @@ public abstract class Rift implements State{
   
   long pauseStart;
   
+  //Start a timer
   void pause(){
     pauseStart = System.currentTimeMillis();
     ms.active = false;
   }
   
+  //End the timer, add pause duration to every timer that needs it
   void unpause(){
     long pauseTime = System.currentTimeMillis() - pauseStart;
     ms.minionspawnShort += pauseTime;
@@ -109,6 +114,7 @@ public abstract class Rift implements State{
         return;
       }
   
+    //Are we attacking an enemy?
     boolean attack=false;
     for (Creature cr : creatures) {
       if(cr == c) continue;
@@ -126,6 +132,8 @@ public abstract class Rift implements State{
       }
     }
 
+    //If not attacking, move to location
+    //(and cancel current attack)
     if (!attack) {
       c.targetLoc = new PVector(x,y);
       c.attacking = false;

@@ -1,5 +1,8 @@
 import java.util.concurrent.TimeUnit;
 
+/*
+* Standard rift, spawns friendly and enemy minions forever. No turrets.
+*/
 class Endless extends Rift{
   public Endless(Main m){
     this.m = m;
@@ -54,8 +57,8 @@ abstract class EndlessTurret extends Endless{
   }
   
   void addTurrets(){
-    creatures.add(new Turret(new PVector(75,displayHeight-200),0,this));
-    creatures.add(new Turret(new PVector(displayWidth-75,displayHeight-200),1,this));
+    creatures.add(new Turret(new PVector(125,displayHeight-200),0,this));
+    creatures.add(new Turret(new PVector(displayWidth-125,displayHeight-200),1,this));
   }
 }
 
